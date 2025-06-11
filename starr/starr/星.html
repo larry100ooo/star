@@ -28,7 +28,7 @@
       padding: 20px;
       box-shadow: 0 0 20px rgba(100, 100, 255, 0.3);
     }
-
+---
     h1 {
       text-align: center;
       color: #6a6ac0;
@@ -52,7 +52,7 @@
       gap: 15px;
       margin: 20px 0;
     }
-
+----
     .sign {
       background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
@@ -86,7 +86,7 @@
       display: block;
       font-size: 14px;
     }
-
+----
     .horoscope-display {
       background: rgba(0, 0, 0, 0.5);
       padding: 20px;
@@ -100,7 +100,7 @@
       color: #d4d4ff;
       margin-top: 0;
     }
-
+-----
     .tabs {
       margin-bottom: 15px;
     }
@@ -124,7 +124,7 @@
       background: #6a6ac0;
       box-shadow: 0 0 10px rgba(106, 106, 192, 0.5);
     }
-
+----
     #horoscope-text {
       line-height: 1.6;
       font-size: 16px;
@@ -150,7 +150,7 @@
     #external-link-button:hover {
       background: #ffcc00;
     }
-
+----
     /* 響應式設計 */
     @media (max-width: 600px) {
       .zodiac-signs {
@@ -163,6 +163,7 @@
         grid-template-columns: repeat(2, 1fr);
       }
     }
+------
   </style>
 </head>
 <body>
@@ -185,7 +186,7 @@
       </div>
     </div>
   </div>
-
+-----
   <script>
     // JavaScript 功能
     document.addEventListener('DOMContentLoaded', function() {
@@ -285,7 +286,7 @@
       const zodiacSignsContainer = document.getElementById('zodiacSigns');
       const externalLinkButton = document.getElementById('external-link-button');
       let currentSelectedSignId = null; // 用於追蹤當前選中的星座 ID
-
+---
       // 初始化星座選擇按鈕
       zodiacData.forEach(sign => {
         const signElement = document.createElement('div');
@@ -323,7 +324,7 @@
           }
         });
       });
-
+---
       // 選擇星座函數
       function selectSign(signId) {
         const sign = zodiacData.find(s => s.id === signId);
@@ -354,7 +355,7 @@
             externalLinkButton.onclick = null; // 移除點擊事件
         }
       }
-
+---
       // 更新運勢顯示
       function updateHoroscopeDisplay(signId, period) {
         const sign = zodiacData.find(s => s.id === signId);
