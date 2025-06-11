@@ -9,7 +9,7 @@
     body {
       font-family: 'Arial', sans-serif;
       background-color: #0a0a1a;
-      background-image: 
+      background-image:
         radial-gradient(white, rgba(255,255,255,.2) 1px, transparent 1px),
         radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 1px);
       background-size: 30px 30px, 60px 60px;
@@ -69,6 +69,12 @@
       box-shadow: 0 0 15px rgba(106, 106, 192, 0.5);
     }
 
+    .sign.active {
+      background: rgba(106, 106, 192, 0.4); /* Highlight active sign */
+      border: 1px solid #6a6ac0;
+      box-shadow: 0 0 15px rgba(106, 106, 192, 0.7);
+    }
+
     .sign img {
       width: 50px;
       height: 50px;
@@ -126,6 +132,23 @@
       padding: 15px;
       border-radius: 8px;
       border-left: 3px solid #6a6ac0;
+      margin-bottom: 15px; /* Add some space below the text */
+    }
+
+    #external-link-button {
+      display: none; /* Hidden by default */
+      background: #e6b800; /* Yellowish color for attention */
+      color: #0a0a1a;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    #external-link-button:hover {
+      background: #ffcc00;
     }
 
     /* 響應式設計 */
@@ -145,13 +168,12 @@
 <body>
   <div class="container">
     <h1>✨ 星座預言家 ✨</h1>
-    
+
     <div class="zodiac-selector">
       <h2>選擇你的星座</h2>
       <div class="zodiac-signs" id="zodiacSigns">
-        <!-- 星座按鈕將由JavaScript動態生成 -->
-      </div>
-      
+        </div>
+
       <div class="horoscope-display">
         <h3 id="selected-sign">請選擇星座</h3>
         <div class="tabs">
@@ -159,6 +181,7 @@
           <button data-period="weekly">本週運勢</button>
         </div>
         <p id="horoscope-text">選擇你的星座查看專屬運勢...</p>
+        <button id="external-link-button">查看更多星座分析</button>
       </div>
     </div>
   </div>
@@ -167,56 +190,43 @@
     // JavaScript 功能
     document.addEventListener('DOMContentLoaded', function() {
       // 星座資料
-      //白羊
       const zodiacData = [
-        { 
+        {
           id: "aries", name: "白羊座", icon: "♈",
           externalUrl: "aries白羊.html"  // 白羊座外部連結
         },
-         // 金牛座外部連結
-        { id: "taurus",
-        name: "金牛座", 
-        icon: "♉",
-          externalUrl: "taurus金牛.html" 
+        { id: "taurus", name: "金牛座", icon: "♉",
+          externalUrl: "taurus金牛.html"
         },
-         // 雙子座外部連結
         { id: "gemini", name: "雙子座", icon: "♊",
-          externalUrl: "gemini雙子.html" 
+          externalUrl: "gemini雙子.html"
         },
-        // 巨蟹座外部連結
         { id: "cancer", name: "巨蟹座", icon: "♋",
-          externalUrl: "cancer巨蟹.html"  
-        }, 
-        // 獅子座外部連結
+          externalUrl: "cancer巨蟹.html"
+        },
         { id: "leo", name: "獅子座", icon: "♌",
-          externalUrl: "leo獅子.html"  // 獅子座外部連結
+          externalUrl: "leo獅子.html"
         },
-        // 處女座外部連結
         { id: "virgo", name: "處女座", icon: "♍",
-          externalUrl: "virgo處女.html"  // 處女座外部連結
+          externalUrl: "virgo處女.html"
         },
-        // 天秤座外部連結
         { id: "libra", name: "天秤座", icon: "♎",
-          externalUrl: "libra天秤.html"  // 天秤座外部連結
+          externalUrl: "libra天秤.html"
         },
-        // 天蠍座外部連結
         { id: "scorpio", name: "天蠍座", icon: "♏",
-          externalUrl: "scorpio天蠍.html"  // 天蠍座外部連結
+          externalUrl: "scorpio天蠍.html"
         },
-        // 射手座外部連結
         { id: "sagittarius", name: "射手座", icon: "♐",
-          externalUrl: "sagittarius射手.html"  // 射手座外部連結
+          externalUrl: "sagittarius射手.html"
         },
-        // 摩羯座外部連結
         { id: "capricorn", name: "摩羯座", icon: "♑",
-          externalUrl: "capricorn魔羯.html"  // 摩羯座外部連結
+          externalUrl: "capricorn魔羯.html"
         },
-        // 水瓶座外部連結
         { id: "aquarius", name: "水瓶座", icon: "♒",
-          externalUrl: "aquarius水瓶.html"  // 水瓶座外部連結
+          externalUrl: "aquarius水瓶.html"
         },
         { id: "pisces", name: "雙魚座", icon: "♓",
-          externalUrl: "pisces雙魚.html"  // 雙魚座外部連結
+          externalUrl: "pisces雙魚.html"
         }
       ];
 
@@ -272,9 +282,11 @@
         }
       };
 
-      // 初始化星座選擇按鈕
       const zodiacSignsContainer = document.getElementById('zodiacSigns');
-      
+      const externalLinkButton = document.getElementById('external-link-button');
+      let currentSelectedSignId = null; // 用於追蹤當前選中的星座 ID
+
+      // 初始化星座選擇按鈕
       zodiacData.forEach(sign => {
         const signElement = document.createElement('div');
         signElement.className = 'sign';
@@ -283,11 +295,11 @@
           <div style="font-size: 2em;">${sign.icon}</div>
           <span>${sign.name}</span>
         `;
-        
+
         signElement.addEventListener('click', () => {
           selectSign(sign.id);
         });
-        
+
         zodiacSignsContainer.appendChild(signElement);
       });
 
@@ -297,13 +309,17 @@
         button.addEventListener('click', () => {
           tabButtons.forEach(btn => btn.classList.remove('active'));
           button.classList.add('active');
-          
-          const currentSign = document.querySelector('.sign.active');
-          if (currentSign) {
-            updateHoroscopeDisplay(
-              currentSign.dataset.sign, 
-              button.dataset.period
-            );
+
+          if (currentSelectedSignId) { // 如果已經有選中的星座
+            updateHoroscopeDisplay(currentSelectedSignId, button.dataset.period);
+          } else {
+            // 如果沒有選中的星座但點擊了tab，嘗試選中預設星座
+            const firstDisplayableSign = zodiacData.find(s => !s.externalUrl);
+            if (firstDisplayableSign) {
+                selectSign(firstDisplayableSign.id);
+            } else if (zodiacData.length > 0) {
+                selectSign(zodiacData[0].id); // 如果所有都有外部連結，預設選第一個
+            }
           }
         });
       });
@@ -311,40 +327,60 @@
       // 選擇星座函數
       function selectSign(signId) {
         const sign = zodiacData.find(s => s.id === signId);
-        
-        // 如果該星座有外部連結，則跳轉
-        if (sign.externalUrl) {
-          window.open(sign.externalUrl, '_blank'); // 在新分頁中開啟
-          return; // 終止後續執行
-        }
-        
-        // 其他星座的正常處理邏輯
+        currentSelectedSignId = signId; // 更新當前選中的星座 ID
+
+        // 移除所有星座的 active 類別
         const allSigns = document.querySelectorAll('.sign');
-        allSigns.forEach(sign => sign.classList.remove('active'));
-        
-        const selectedSign = document.querySelector(`.sign[data-sign="${signId}"]`);
-        selectedSign.classList.add('active');
-        
+        allSigns.forEach(s => s.classList.remove('active'));
+
+        // 為選定的星座添加 active 類別
+        const selectedSignElement = document.querySelector(`.sign[data-sign="${signId}"]`);
+        if (selectedSignElement) {
+            selectedSignElement.classList.add('active');
+        }
+
+        // 更新運勢顯示
         const activePeriod = document.querySelector('.tabs button.active').dataset.period;
         updateHoroscopeDisplay(signId, activePeriod);
+
+        // 檢查是否有外部連結，並顯示/隱藏按鈕
+        if (sign && sign.externalUrl) {
+            externalLinkButton.style.display = 'block'; // 顯示按鈕
+            externalLinkButton.onclick = () => { // 綁定點擊事件，點擊時跳轉
+                window.open(sign.externalUrl, '_blank');
+            };
+        } else {
+            externalLinkButton.style.display = 'none'; // 隱藏按鈕
+            externalLinkButton.onclick = null; // 移除點擊事件
+        }
       }
 
       // 更新運勢顯示
       function updateHoroscopeDisplay(signId, period) {
         const sign = zodiacData.find(s => s.id === signId);
-        const horoscope = horoscopeData[signId][period];
-        
-        document.getElementById('selected-sign').textContent = 
-          `${sign.name} ${period === 'daily' ? '今日' : '本週'}運勢`;
-        document.getElementById('horoscope-text').textContent = horoscope;
+        if (horoscopeData[signId] && horoscopeData[signId][period]) {
+            const horoscope = horoscopeData[signId][period];
+            document.getElementById('selected-sign').textContent =
+              `${sign.name} ${period === 'daily' ? '今日' : '本週'}運勢`;
+            document.getElementById('horoscope-text').textContent = horoscope;
+        } else {
+            // 如果找不到運勢資料，顯示提示
+            document.getElementById('selected-sign').textContent = `${sign ? sign.name : '未知'} 運勢`;
+            document.getElementById('horoscope-text').textContent = "抱歉，目前沒有這個星座的運勢資料。";
+        }
       }
 
-      // 默認選擇第一個星座
+      // **最重要的修正：確保頁面載入時有預設選中**
+      // 確保在所有 DOM 元素和事件監聽器設置完畢後執行預設選擇
       if (zodiacData.length > 0) {
-        // 跳過白羊座（如果它是第一個）
-        const firstSign = zodiacData[0].id === "aries" ? zodiacData[1].id : zodiacData[0].id;
-        selectSign(firstSign);
+        const firstDisplayableSign = zodiacData.find(s => !s.externalUrl);
+        if (firstDisplayableSign) {
+          selectSign(firstDisplayableSign.id); // 優先選第一個沒有外部連結的
+        } else {
+          selectSign(zodiacData[0].id); // 如果所有都有外部連結，選第一個
+        }
       }
+      // 如果 zodiacData 是空的，則保持原始的提示文本
     });
   </script>
 </body>
